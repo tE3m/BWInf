@@ -161,6 +161,8 @@ donald = [[], normen(f.readline())]
 spiesse = []
 for i in range(0, int(f.readline())):
     spiesse.append([normen(f.readline()), normen(f.readline())])
+# Schließen der eingelesenen Datei
+f.close()
 # Speichern der vorhandenen Früchte als Liste in `fruechte`
 fruechte = []
 # Speichern der Früchte und zugehörigen Schüsseln in `zuordnung`, mit 0 als Wert für
