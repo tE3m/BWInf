@@ -159,7 +159,7 @@ def eindeutig():
 
 
 # Einlesen der gegebenen Daten
-f = open(sys.argv[1], "r")
+f = open(argv[1], "r")
 zuLoesen = [x for x in range(1, int(f.readline())+1)]
 # Speichern einer leeren Liste von Schüsselzahlen und der gesuchten Früchte in `donald`
 donald = [[], normen(f.readline())]
@@ -189,7 +189,7 @@ while len(donald[1]) != len(donald[0]):
     # Wird nach einer vollständigen Iteration keine neue Lösung gefunden, dann gib die aktuelle aus, um eine
     # Endlosschleife zu verhindern
     if daten == daten_alt:
-        sys.exit("Nicht geschafft")
+        exit("Nicht geschafft")
 print(fruechte)
 print(zuordnung)
 print(donald)
