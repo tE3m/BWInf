@@ -1,9 +1,7 @@
-import debugpy
-
 from copy import deepcopy
 
 # Zum Einlesen von Kommandozeilenargumenten
-import sys
+from sys import argv, exit
 
 # Normen der Daten
 
@@ -150,6 +148,14 @@ def eindeutig():
             zuLoesen.remove(moegliche[0])
             if frucht[0] in donald[1]:
                 donald[0].append(moegliche[0])
+        
+        elif type(frucht[1])==list and len(moegliche)<len(frucht[1]) and len(nichtLoesbar) != 0:
+            for zugeordnet in zuordnung:
+                for nichtLoesbare in nichtLoesbar:
+                    if zugeordnet[1] == nichtLoesbare[1]:
+                        zugeordnet[1] = moegliche
+                        nichtLoesbar.remove(nichtLoesbare)
+                        break
 
 
 # Einlesen der gegebenen Daten
@@ -183,8 +189,7 @@ while len(donald[1]) != len(donald[0]):
     # Wird nach einer vollständigen Iteration keine neue Lösung gefunden, dann gib die aktuelle aus, um eine
     # Endlosschleife zu verhindern
     if daten == daten_alt:
-        print("Nicht geschafft")
-        break
+        sys.exit("Nicht geschafft")
 print(fruechte)
 print(zuordnung)
 print(donald)
