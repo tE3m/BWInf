@@ -1,4 +1,25 @@
-from sys import argv
+from sys import argv, exit
+
+
+class anmeldung:
+    beginntUm: int
+    endetUm: int
+    laenge: int
+
+    def __init__(self, beginntUm: int, endetUm: int, laenge: int):
+        try:
+            assert(beginntUm >= 8)
+            assert(endetUm <= 18)
+            assert(beginntUm < endetUm)
+            assert(laenge != 0)
+        except AssertionError:
+            print("Die Konfiguration", beginntUm,
+                  endetUm, laenge, "ist ungültig.")
+            exit()
+        self.beginntUm = beginntUm
+        self.endetUm = endetUm
+        self.laenge = laenge
+
 
 def normen(eingabe):
     """Trennt die einzelnen Elemente der Eingabe bei Leerzeichen"""
