@@ -5,6 +5,7 @@ class anmeldung:
     beginntUm: int
     endetUm: int
     laenge: int
+    dauer: int
 
     def __init__(self, beginntUm: int, endetUm: int, laenge: int):
         try:
@@ -19,6 +20,7 @@ class anmeldung:
         self.beginntUm = beginntUm
         self.endetUm = endetUm
         self.laenge = laenge
+        self.dauer = endetUm-beginntUm
 
 
 def normen(eingabe):
