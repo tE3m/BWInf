@@ -30,6 +30,23 @@ def normen(eingabe):
     finally:
         return eingabe
 
+
+def platzFinden(stunde: int):
+    global karte
+    leereBereiche = []
+    leererBereich = False
+    for index, wert in enumerate(karte[stunde]):
+        if leererBereich ==False:
+            if wert == False:
+                ersteStelle = index
+                leererBereich = True
+        if leererBereich == True:
+            if wert != False or index == len(karte[stunde])-1:
+                leereBereiche.append([ersteStelle, index-1])
+                leererBereich = False
+    return leereBereiche
+
+
 f = open(argv[1], "r")
 anmeldungen = {}
 beginntUm = {}
