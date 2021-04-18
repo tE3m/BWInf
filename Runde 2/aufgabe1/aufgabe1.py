@@ -10,13 +10,13 @@ def normen(eingabe):
         return eingabe
 
 f = open(argv[1], "r")
-anmeldungen = []
+anmeldungen = {}
 beginntUm = {}
 endetUm = {}
 karte = [False for x in range(0, 1000)]
 for zeile in range(0, int(f.readline())):
     anmeldung = normen(f.readline())
-    anmeldungen.append(anmeldung)
+    anmeldungen[zeile] = anmeldung
     if anmeldung[0] not in beginntUm.keys():
         beginntUm[anmeldung[0]] = [zeile]
     else:
