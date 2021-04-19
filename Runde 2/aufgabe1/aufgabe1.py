@@ -69,7 +69,7 @@ def platzFinden(registrierung: anmeldung):
                     if zeit == registrierung.endetUm-1:
                         passt.append(luecke)
         # Falls nicht, kann der Bereich der passenden Größe direkt geprüft werden
-        else:
+        elif bereich[1]+1-bereich[0] == registrierung.laenge:
             for zeit in range(registrierung.beginntUm, registrierung.endetUm):
                 if karte[zeit][bereich[0]:bereich[1]+1] != [False for x in range(bereich[0], bereich[1]+1)]:
                     break
