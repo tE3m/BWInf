@@ -54,7 +54,7 @@ def standFinden(laenge: int, stunde: int, auswahl: dict = None, kombination: lis
     global anmeldungen
     if auswahl == None:
         auswahl = {distanz: [[x, anmeldungen[x].dauer] for x in beginntUm[stunde]
-                             if anmeldungen[x].laenge == distanz] for distanz in range(1, laenge)}
+                             if anmeldungen[x].laenge == distanz] for distanz in range(1, laenge+1)}
         zuLoeschen = []
         [element[1].sort(key=itemgetter(1), reverse=True) if element[1] != [
         ] else zuLoeschen.append(element[0]) for element in auswahl.items()]
