@@ -127,7 +127,7 @@ for stand in sortiert:
         gesamtsumme += anmeldungen[stand].laenge * anmeldungen[stand].dauer
         akzeptiert.append(stand)
 # Öffnen der Datei zur Ausgabe der Belegung
-w = open("{}.csv".format(argv[1]), "w")
+w = open("{}.csv".format(argv[1].strip(".txt")), "w")
 csvwriter = csv.writer(w)
 # Schreiben der csv-Datei
 for stunde in karte.values():
