@@ -1,4 +1,5 @@
 from sys import argv, exit
+import csv
 
 
 class anmeldung:
@@ -34,6 +35,7 @@ def normen(eingabe):
 
 
 def platzFinden(registrierung: anmeldung):
+    """Findet einen Standort für eine gegebene Anmeldung."""
     global karte
     leereBereiche = []
     leererBereich = False
@@ -43,12 +45,14 @@ def platzFinden(registrierung: anmeldung):
                 ersteStelle = index
                 leererBereich = True
         if leererBereich == True:
-            if index-ersteStelle+1 >= registrierung.laenge:
-                if wert != False:
+            if wert != False:
+                if index-ersteStelle >= registrierung.laenge:
                     leereBereiche.append([ersteStelle, index-1])
                     leererBereich = False
-                elif index == len(karte[registrierung.beginntUm])-1:
-                    leereBereiche.append([ersteStelle, index])
+                else:
+                    leererBereich = False
+            elif index == len(karte[registrierung.beginntUm])-1:
+                leereBereiche.append([ersteStelle, index])
     passt = []
     for bereich in leereBereiche:
         if bereich[1]+1-bereich[0] > registrierung.laenge:
@@ -61,40 +65,48 @@ def platzFinden(registrierung: anmeldung):
                         passt.append(luecke)
         else:
             return(bereich)
-    if passt != []:    
+    if passt != []:
         return(passt[0])
     else:
         return False
 
 
 def standZuordnen(standID: int, startposition: int):
+    """Ordnet einen gegebenen Stand einer gegebenen Fläche zu"""
     global karte
     global anmeldungen
     stand: anmeldung = anmeldungen[standID]
     for anmeldezeit in range(stand.beginntUm, stand.endetUm):
-        karte[anmeldezeit][startposition:startposition+stand.laenge] = [standID for x in range(stand.laenge)]
+        karte[anmeldezeit][startposition:startposition +
+                           stand.laenge] = [standID for x in range(stand.laenge)]
+
 
 f = open(argv[1], "r")
 anmeldungen = {}
 beginntUm = {x: [] for x in range(8, 18)}
-endetUm = {x: [] for x in range(9, 19)}
 karte = {x: [False for x in range(0, 1000)] for x in range(8, 18)}
 akzeptiert = []
 gesamtsumme = 0
-test = 0
 sortiert = []
 for zeile in range(1, int(f.readline())+1):
     werte = normen(f.readline())
     anmeldungen[zeile] = anmeldung(werte[0], werte[1], werte[2])
     beginntUm[werte[0]].append(zeile)
-    endetUm[werte[1]].append(zeile)
     sortiert.append(zeile)
-    test += (werte[1] - werte[0]) * werte[2]
-sortiert.sort(key=lambda a: anmeldungen[a].laenge * anmeldungen[a].dauer, reverse=True)
+f.close()
+sortiert.sort(
+    key=lambda a: anmeldungen[a].laenge * anmeldungen[a].dauer, reverse=True)
 for stand in sortiert:
     zugeordnet = platzFinden(anmeldungen[stand])
     if zugeordnet != False:
         standZuordnen(stand, zugeordnet[0])
         gesamtsumme += anmeldungen[stand].laenge * anmeldungen[stand].dauer
         akzeptiert.append(stand)
-print("Die ausgewählten Anmeldungen befinden sich in den Zeilen", akzeptiert, ". Damit wird ein Umsatz von", gesamtsumme, "erzielt.")
+w = open("ausgabe.csv", "w")
+csvwriter = csv.writer(w)
+for stunde in karte.values():
+    csvwriter.writerow(stunde)
+csvwriter.writerow(["Gesamt: " + str(gesamtsumme) + " Euro"])
+w.close()
+print("Die ausgewählten Anmeldungen befinden sich in den Zeilen",
+      akzeptiert, ". Damit wird ein Umsatz von", gesamtsumme, "erzielt.")
