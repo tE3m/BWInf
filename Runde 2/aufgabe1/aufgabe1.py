@@ -44,9 +44,11 @@ def platzFinden(stunde: int):
                 ersteStelle = index
                 leererBereich = True
         if leererBereich == True:
-            if wert != False or index == len(karte[stunde])-1:
+            if wert != False:
                 leereBereiche.append([ersteStelle, index-1])
                 leererBereich = False
+            elif index == len(karte[stunde])-1:
+                leereBereiche.append([ersteStelle, index])
     return leereBereiche
 
 
