@@ -75,6 +75,7 @@ def standFinden(laenge: int, stunde: int, auswahl: dict = None, kombination: lis
     if auswahl == {}:
         return(kombination)
     kombination.append(auswahl[max(auswahl.keys())].pop(0)[0])
+    beginntUm[stunde].remove(kombination[-1])
     if anmeldungen[kombination[-1]].laenge != laenge:
         if auswahl[max(auswahl.keys())] == []:
             auswahl.pop(max(auswahl.keys()))
