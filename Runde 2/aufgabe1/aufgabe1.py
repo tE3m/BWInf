@@ -52,33 +52,21 @@ def platzFinden(stunde: int):
     return leereBereiche
 
 
-def standFinden(laenge: int, stunde: int, auswahl: dict = None, kombination: list = None):
+def standFinden(laenge: int, stunde: int, auswahl: list = None, kombination: list = None):
     global anmeldungen
     if auswahl == None:
-        auswahl = {distanz: [[x, anmeldungen[x].dauer] for x in beginntUm[stunde]
-                             if anmeldungen[x].laenge == distanz] for distanz in range(1, laenge+1)}
-        zuLoeschen = []
-        [element[1].sort(key=itemgetter(1), reverse=True) if element[1] != [
-        ] else zuLoeschen.append(element[0]) for element in auswahl.items()]
-        for element in zuLoeschen:
-            auswahl.pop(element)
-        del zuLoeschen
+        auswahl = [x for x in beginntUm[stunde]
+                   if anmeldungen[x].laenge <= laenge]
+        auswahl.sort(key=lambda a: anmeldungen[a].laenge * anmeldungen[a].dauer, reverse=True)
     else:
-        zuLoeschen = []
-        for key in auswahl.keys():
-            if key > laenge:
-                zuLoeschen.append(key)
-        for key in zuLoeschen:
-            auswahl.pop(key)
+        auswahl = list(filter(lambda a: anmeldungen[a].laenge <= laenge, auswahl))
     if kombination == None:
         kombination = []
-    if auswahl == {}:
+    if auswahl == []:
         return(kombination)
-    kombination.append(auswahl[max(auswahl.keys())].pop(0)[0])
+    kombination.append(auswahl.pop(0))
     beginntUm[stunde].remove(kombination[-1])
-    if anmeldungen[kombination[-1]].laenge != laenge:
-        if auswahl[max(auswahl.keys())] == []:
-            auswahl.pop(max(auswahl.keys()))
+    if anmeldungen[kombination[-1]].laenge <= laenge:
         return(standFinden(laenge-anmeldungen[kombination[-1]].laenge, stunde, auswahl, kombination))
     return(kombination)
 
