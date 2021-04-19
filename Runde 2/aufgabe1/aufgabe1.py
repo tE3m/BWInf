@@ -1,5 +1,4 @@
 from sys import argv, exit
-from operator import itemgetter
 
 
 class anmeldung:
@@ -34,41 +33,38 @@ def normen(eingabe):
         return eingabe
 
 
-def platzFinden(stunde: int):
+def platzFinden(registrierung: anmeldung):
     global karte
     leereBereiche = []
     leererBereich = False
-    for index, wert in enumerate(karte[stunde]):
-        if leererBereich ==False:
+    for index, wert in enumerate(karte[registrierung.beginntUm]):
+        if leererBereich == False:
             if wert == False:
                 ersteStelle = index
                 leererBereich = True
         if leererBereich == True:
-            if wert != False:
-                leereBereiche.append([ersteStelle, index-1])
-                leererBereich = False
-            elif index == len(karte[stunde])-1:
-                leereBereiche.append([ersteStelle, index])
-    return leereBereiche
-
-
-def standFinden(laenge: int, stunde: int, auswahl: list = None, kombination: list = None):
-    global anmeldungen
-    if auswahl == None:
-        auswahl = [x for x in beginntUm[stunde]
-                   if anmeldungen[x].laenge <= laenge]
-        auswahl.sort(key=lambda a: anmeldungen[a].laenge * anmeldungen[a].dauer, reverse=True)
+            if index-ersteStelle+1 >= registrierung.laenge:
+                if wert != False:
+                    leereBereiche.append([ersteStelle, index-1])
+                    leererBereich = False
+                elif index == len(karte[registrierung.beginntUm])-1:
+                    leereBereiche.append([ersteStelle, index])
+    passt = []
+    for bereich in leereBereiche:
+        if bereich[1]+1-bereich[0] > registrierung.laenge:
+            for start in range(bereich[0], bereich[1]+2-registrierung.laenge):
+                luecke = [start, start+registrierung.laenge-1]
+                for zeit in range(registrierung.beginntUm, registrierung.endetUm):
+                    if karte[zeit][luecke[0]:luecke[1]+1] != [False for x in range(luecke[0], luecke[1]+1)]:
+                        break
+                    if zeit == registrierung.endetUm-1:
+                        passt.append(luecke)
+        else:
+            return(bereich)
+    if passt != []:    
+        return(passt[0])
     else:
-        auswahl = list(filter(lambda a: anmeldungen[a].laenge <= laenge, auswahl))
-    if kombination == None:
-        kombination = []
-    if auswahl == []:
-        return(kombination)
-    kombination.append(auswahl.pop(0))
-    beginntUm[stunde].remove(kombination[-1])
-    if anmeldungen[kombination[-1]].laenge <= laenge:
-        return(standFinden(laenge-anmeldungen[kombination[-1]].laenge, stunde, auswahl, kombination))
-    return(kombination)
+        return False
 
 
 def standZuordnen(standID: int, startposition: int):
@@ -80,18 +76,25 @@ def standZuordnen(standID: int, startposition: int):
 
 f = open(argv[1], "r")
 anmeldungen = {}
-beginntUm = {}
-endetUm = {}
-karte = [False for x in range(0, 1000)]
-for zeile in range(0, int(f.readline())):
-    anmeldung = normen(f.readline())
-    anmeldungen[zeile] = anmeldung
-    if anmeldung[0] not in beginntUm.keys():
-        beginntUm[anmeldung[0]] = [zeile]
-    else:
-        beginntUm[anmeldung[0]].append(zeile)
-    if anmeldung[1] not in endetUm.keys():
-        endetUm[anmeldung[1]] = [zeile]
-    else:
-        endetUm[anmeldung[1]].append(zeile)
-pass
+beginntUm = {x: [] for x in range(8, 18)}
+endetUm = {x: [] for x in range(9, 19)}
+karte = {x: [False for x in range(0, 1000)] for x in range(8, 18)}
+akzeptiert = []
+gesamtsumme = 0
+test = 0
+sortiert = []
+for zeile in range(1, int(f.readline())+1):
+    werte = normen(f.readline())
+    anmeldungen[zeile] = anmeldung(werte[0], werte[1], werte[2])
+    beginntUm[werte[0]].append(zeile)
+    endetUm[werte[1]].append(zeile)
+    sortiert.append(zeile)
+    test += (werte[1] - werte[0]) * werte[2]
+sortiert.sort(key=lambda a: anmeldungen[a].laenge * anmeldungen[a].dauer, reverse=True)
+for stand in sortiert:
+    zugeordnet = platzFinden(anmeldungen[stand])
+    if zugeordnet != False:
+        standZuordnen(stand, zugeordnet[0])
+        gesamtsumme += anmeldungen[stand].laenge * anmeldungen[stand].dauer
+        akzeptiert.append(stand)
+print("Die ausgewählten Anmeldungen befinden sich in den Zeilen", akzeptiert, ". Damit wird ein Umsatz von", gesamtsumme, "erzielt.")
