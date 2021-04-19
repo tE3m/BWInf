@@ -3,3 +3,4 @@ test.py
 ausgabe.txt
 .vscode/launch.json
 .vscode/launch.json
+*.csv
