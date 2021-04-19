@@ -88,7 +88,7 @@ def standZuordnen(standID: int, startposition: int):
     global anmeldungen
     stand: anmeldung = anmeldungen[standID]
     for anmeldezeit in range(stand.beginntUm, stand.endetUm):
-        karte[anmeldezeit][startposition:startposition+stand.laenge-1] = [standID for x in range(stand.laenge)]
+        karte[anmeldezeit][startposition:startposition+stand.laenge] = [standID for x in range(stand.laenge)]
 
 f = open(argv[1], "r")
 anmeldungen = {}
