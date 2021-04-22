@@ -11,7 +11,7 @@
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
-            "args": ["/home/tarek/Projects/BWInf-1/Runde 2/beispiele/spiesse1.txt"]
+            "args": ["C:\\Users\\teem\\source\\repos\\BWInf\\Runde 2\\beispiele\\flohmarkt1.txt"]
         }
     ]
 }

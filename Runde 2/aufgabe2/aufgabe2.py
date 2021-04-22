@@ -3,8 +3,6 @@ from copy import deepcopy
 # Zum Einlesen von Kommandozeilenargumenten
 from sys import argv, exit
 
-# Normen der Daten
-
 
 def normen(eingabe):
     """Trennt die einzelnen Elemente der Eingabe bei Leerzeichen"""
@@ -21,7 +19,7 @@ def fruchtliste(zuPruefen):
     for frucht in zuPruefen:
         if frucht not in fruechte:
             fruechte.append(frucht)
-            zuordnung[frucht]= 0
+            zuordnung[frucht] = 0
 
 
 def zuordnen():
@@ -52,7 +50,8 @@ def zuordnen():
                         if schuessel not in schnitt:
                             nichtLoesung.append(schuessel)
                             break
-                kuerzesterSpiess = [x for x in kuerzesterSpiess if x not in nichtLoesung]
+                kuerzesterSpiess = [
+                    x for x in kuerzesterSpiess if x not in nichtLoesung]
             # Falls es genau eine überall auftauchende Schüssel gibt, speicher das Paar aus Schüssel und
             # Frucht in `geloeste`
             if len(kuerzesterSpiess) == 1:
@@ -65,32 +64,38 @@ def zuordnen():
     # Entferne die gelösten Paare aus den noch zu lösenden
     for geloest in geloeste:
         for zugeordnet in zuordnung.keys():
-            if type(zuordnung[zugeordnet])==list and geloest[1] in zuordnung[zugeordnet]:
+            if type(zuordnung[zugeordnet]) == list and geloest[1] in zuordnung[zugeordnet]:
                 zuordnung[zugeordnet].remove(geloest[1])
-                if len(zuordnung[zugeordnet])==1:
-                    zuordnung[zugeordnet]=zuordnung[zugeordnet][0]
+                if len(zuordnung[zugeordnet]) == 1:
+                    zuordnung[zugeordnet] = zuordnung[zugeordnet][0]
                     geloeste.append([zugeordnet, zuordnung[zugeordnet]])
         fruechte.remove(geloest[0])
         zuLoesen.remove(geloest[1])
         if geloest[0] in donald[1]:
             donald[0].append(geloest[1])
-        
 
 
 def eindeutig():
     """Ordnet den Früchten in `zuordnung` eindeutige Schüsseln zu"""
     for frucht in zuordnung.keys():
-        if len(donald[0])==len(donald[1]):
+        # Ist die Lösung gefunden, kann die Schleife abgebrochen werden
+        if len(donald[0]) == len(donald[1]):
             break
         nichtMoegliche = []
+        # Wurde noch keine eindeutige Lösung gefunden, wird eine Kopie des derzeitigen Standes erstellt
         if type(zuordnung[frucht]) == list and len(zuordnung[frucht]) != 0:
             moegliche = zuordnung[frucht][:]
+        # Kommt die Frucht auf keinem Spieß vor, muss nach dem Ausschlussverfahren vorgegangen werden
         elif type(zuordnung[frucht]) == int and zuordnung[frucht] == 0:
             moegliche = zuLoesen[:]
+        # Ist die Frucht bereits gelöst, muss nichts getan werden
         else:
             continue
+        # Iteration Vergleich mit allen Früchten
         for schuesseln in zuordnung.items():
+            # (Außer sich selbst)
             if schuesseln[0] != frucht:
+                # Ist die verglichene Frucht bereits gelöst, kann die Schüssel aus den Möglichen entfernt werden
                 if type(schuesseln[1]) == int and schuesseln[1] in moegliche:
                     zuordnung[frucht].remove(schuesseln[1])
                     moegliche.remove(schuesseln[1])
@@ -101,18 +106,19 @@ def eindeutig():
                     # der Anzahl der Früchte entspricht und dazu noch alle Früchte in der Lösung vorkommen,
                     # kann man diese Früchte als gelöst betrachten, da sie ohnehin alle gebraucht werden, also ist irrelevant,
                     # welche der Schüsseln tatsächlich zu der Frucht gehört
-                    if len(moegliche)==2:
-                            if (schuesseln[0] in donald[1] and frucht in donald[1]) or (schuesseln[0] not in donald[1] and frucht not in donald[1]):
-                                if schuesseln[0] in donald[1] and frucht in donald[1]:
-                                    donald[0].append(moegliche[0])
-                                    donald[0].append(moegliche[1])
-                                zuordnung[frucht] = moegliche[0]
-                                zuordnung[schuesseln[0]] = moegliche[1]
-                                fruechte.remove(frucht)
-                                fruechte.remove(schuesseln[0])
-                                zuLoesen.remove(moegliche[0])
-                                zuLoesen.remove(moegliche[1])
+                    if len(moegliche) == 2:
+                        if (schuesseln[0] in donald[1] and frucht in donald[1]) or (schuesseln[0] not in donald[1] and frucht not in donald[1]):
+                            if schuesseln[0] in donald[1] and frucht in donald[1]:
+                                donald[0].append(moegliche[0])
+                                donald[0].append(moegliche[1])
+                            zuordnung[frucht] = moegliche[0]
+                            zuordnung[schuesseln[0]] = moegliche[1]
+                            fruechte.remove(frucht)
+                            fruechte.remove(schuesseln[0])
+                            zuLoesen.remove(moegliche[0])
+                            zuLoesen.remove(moegliche[1])
                     else:
+                        # Sind nicht bloß zwei Früchte involviert, müssen alle Früchte mit diesem Lösungsstand betrachtet werden
                         nichtLoesbar = []
                         inDonald = []
                         nichtInDonald = []
@@ -122,39 +128,45 @@ def eindeutig():
                                     inDonald.append(paar)
                                 else:
                                     nichtInDonald.append(paar)
+                        # Es kann lediglich eine Aussage getroffen werden, wenn alle oder keine der Früchte für die Lösung gebraucht wird
                         if len(nichtInDonald) == 0:
                             nichtLoesbar = inDonald
                         elif len(inDonald) == 0:
                             nichtLoesbar = nichtInDonald
+                        # Ist das der Fall, können alle involvierten Früchte als gelöst betrachtet werden
                         if len(nichtLoesbar) == len(moegliche):
                             for moeglich in range(0, len(moegliche)):
-                                zuordnung[nichtLoesbar[moeglich][0]] = moegliche[moeglich]
+                                zuordnung[nichtLoesbar[moeglich]    #AutoPEP8 möchte es so formatiert
+                                          [0]] = moegliche[moeglich]
                                 fruechte.remove(nichtLoesbar[moeglich][0])
                                 zuLoesen.remove(moegliche[moeglich])
                                 if len(nichtInDonald) == 0:
                                     donald[0].append(moegliche[moeglich])
                             break
+                # Ist die verglichene Frucht einfach nur unglöst, können die möglichen Schüsseln auf Einzigartigkeit überprüft werden
                 elif type(schuesseln[1]) == list:
                     for schuessel in schuesseln[1]:
                         if schuessel in moegliche and schuessel in zuLoesen and schuessel not in nichtMoegliche:
                             nichtMoegliche.append(schuessel)
 
+        # Konnte ein Teil der möglichen Lösung so ausgeschlossen werden, wird sie gelöscht
         if len(moegliche) > len(nichtMoegliche):
             for nichtMoeglich in nichtMoegliche:
-                    moegliche.remove(nichtMoeglich)
+                moegliche.remove(nichtMoeglich)
 
+        # Ist die Lösung auf eine Möglichkeit reduziert worden, muss dies die Lösung sein
         if len(moegliche) == 1:
             zuordnung[frucht] = moegliche[0]
             fruechte.remove(frucht)
             zuLoesen.remove(moegliche[0])
             if frucht in donald[1]:
                 donald[0].append(moegliche[0])
-        
-        elif type(zuordnung[frucht])==list and len(moegliche)<len(zuordnung[frucht]):
+
+        # Konnte die mögliche Lösung für diese eingeschränkt werden, gilt diese auch für die anderen Früchte mit der gleichen potenziellen Lösung
+        elif type(zuordnung[frucht]) == list and len(moegliche) < len(zuordnung[frucht]):
             if len(nichtLoesbar) != 0:
                 for nichtLoesbare in nichtLoesbar:
                     zuordnung[nichtLoesbare[0]] = moegliche
-                
 
 
 # Einlesen der gegebenen Daten
@@ -188,7 +200,7 @@ while len(donald[1]) != len(donald[0]):
     # Wird nach einer vollständigen Iteration keine neue Lösung gefunden, dann gib die aktuelle aus, um eine
     # Endlosschleife zu verhindern
     if daten == daten_alt:
-        exit("Nicht geschafft")
-print(fruechte)
-print(zuordnung)
-print(donald)
+        print("Von gesuchten", len(donald[1]), "Fruchtsorten wurden folgende", len(donald[0]), "Schüsseln bestimmt:", donald[0])
+        print("Die restliche Zuordnung wurde wie folgt bestimmt:", zuordnung)
+        exit()
+print("Als gesuchte Schüsseln wurden", donald[0], "identifiziert.")
