@@ -4,7 +4,7 @@
     <option name="SCOPE_TYPE" value="3" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ac3cad4b-c649-41b9-9ce0-772a7a2d7206" name="Changes" comment="Aufgabe 1: Definition der Klassen `ParkingLot`, `Car`, `NormalCar` und `SideWaysCar`">
+    <list default="true" id="ac3cad4b-c649-41b9-9ce0-772a7a2d7206" name="Changes" comment="Entfernung überflüssiger Initialisierungen">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/aufgabe1/aufgabe1.py" beforeDir="false" afterPath="$PROJECT_DIR$/aufgabe1/aufgabe1.py" afterDir="false" />
     </list>
@@ -15,6 +15,7 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="ROOT_SYNC" value="DONT_SYNC" />
   </component>
   <component name="GitSEFilterConfiguration">
     <file-type-list>
@@ -31,9 +32,6 @@
         <option name="url" value="https://github.com/TarekJ03/BWInf.git" />
       </UrlAndAccount>
     </option>
-  </component>
-  <component name="ProblemsViewState">
-    <option name="selectedIndex" value="2" />
   </component>
   <component name="ProjectId" id="1xYUIXvxHmfCiOiyDzZd0vknzcu" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -94,7 +92,28 @@
       <option name="project" value="LOCAL" />
       <updated>1630612558566</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Entfernung überflüssiger Initialisierungen">
+      <created>1630613960640</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1630613960640</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Entfernung überflüssiger Initialisierungen">
+      <created>1630613994897</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1630613994897</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Entfernung überflüssiger Initialisierungen">
+      <created>1630614052632</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1630614052632</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -112,10 +131,18 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Umzug zu PyCharm" />
     <MESSAGE value="Aufgabe 1: Definition der Klassen `ParkingLot`, `Car`, `NormalCar` und `SideWaysCar`" />
-    <option name="LAST_COMMIT_MESSAGE" value="Aufgabe 1: Definition der Klassen `ParkingLot`, `Car`, `NormalCar` und `SideWaysCar`" />
+    <MESSAGE value="Entfernung überflüssiger Initialisierungen" />
+    <option name="LAST_COMMIT_MESSAGE" value="Entfernung überflüssiger Initialisierungen" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/aufgabe1/aufgabe1.py</url>
+          <line>68</line>
+          <option name="timeStamp" value="11" />
+        </line-breakpoint>
+      </breakpoints>
       <default-breakpoints>
         <breakpoint type="python-exception">
           <properties notifyOnTerminate="true" exception="BaseException">
