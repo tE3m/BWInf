@@ -4,7 +4,7 @@
     <option name="SCOPE_TYPE" value="3" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ac3cad4b-c649-41b9-9ce0-772a7a2d7206" name="Changes" comment="Entfernung überflüssiger Initialisierungen">
+    <list default="true" id="ac3cad4b-c649-41b9-9ce0-772a7a2d7206" name="Changes" comment="Einführung von `blocked_spots` als `dict`, der als `list` ausgegeben wird, dadurch nötige getter und setter in `SideWaysCar`">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/aufgabe1/aufgabe1.py" beforeDir="false" afterPath="$PROJECT_DIR$/aufgabe1/aufgabe1.py" afterDir="false" />
     </list>
@@ -113,7 +113,14 @@
       <option name="project" value="LOCAL" />
       <updated>1630614052632</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Einführung von `blocked_spots` als `dict`, der als `list` ausgegeben wird, dadurch nötige getter und setter in `SideWaysCar`">
+      <created>1630616546280</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1630616546280</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -132,7 +139,8 @@
     <MESSAGE value="Umzug zu PyCharm" />
     <MESSAGE value="Aufgabe 1: Definition der Klassen `ParkingLot`, `Car`, `NormalCar` und `SideWaysCar`" />
     <MESSAGE value="Entfernung überflüssiger Initialisierungen" />
-    <option name="LAST_COMMIT_MESSAGE" value="Entfernung überflüssiger Initialisierungen" />
+    <MESSAGE value="Einführung von `blocked_spots` als `dict`, der als `list` ausgegeben wird, dadurch nötige getter und setter in `SideWaysCar`" />
+    <option name="LAST_COMMIT_MESSAGE" value="Einführung von `blocked_spots` als `dict`, der als `list` ausgegeben wird, dadurch nötige getter und setter in `SideWaysCar`" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

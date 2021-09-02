@@ -56,7 +56,7 @@ class SideWaysCar(Car):
         return self._position
 
     @position.setter
-    def position(self, position) -> None:
+    def position(self, position: int) -> None:
         self._position = position
         self.parent_lot.update_blocked_spots(self)
 
