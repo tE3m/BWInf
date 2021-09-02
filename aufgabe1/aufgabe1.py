@@ -14,6 +14,8 @@ class Util:
 class ParkingLot:
 
     def __init__(self) -> None:
+        self.normal_cars = []
+        self.sideways_cars = []
         max_letter = file.readline()[2]
         for normal_car_letter in letters[:Util.get_index_of_letter(max_letter)]:
             self.normal_cars.append(NormalCar(self, normal_car_letter))
@@ -22,16 +24,11 @@ class ParkingLot:
             self.sideways_cars.append(SideWaysCar(self, sideways_car_letter, position))
         file.close()
 
-    normal_cars = []
-    sideways_cars = []
-
 
 class Car:
     def __init__(self, parent_lot: ParkingLot, letter: str) -> None:
         self.letter = letter
         self.parent_lot = parent_lot
-
-    letter: str
 
 
 class NormalCar(Car):
@@ -39,15 +36,11 @@ class NormalCar(Car):
         super().__init__(parent_lot, letter)
         self.slot_number = Util.get_index_of_letter(self.letter)
 
-    slot_number: int
-
 
 class SideWaysCar(Car):
     def __init__(self, parent_lot: ParkingLot, letter: str, position: int) -> None:
         super().__init__(parent_lot, letter)
         self.position = position
-
-    position: int
 
 
 file = open(
