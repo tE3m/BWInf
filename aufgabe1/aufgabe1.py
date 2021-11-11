@@ -12,9 +12,11 @@ class NonExistentSpaceError(ValueError):
 
 class Util:
 
+    @staticmethod
     def get_index_of_letter(letter: str) -> int:
         return letters.index(letter)
 
+    @staticmethod
     def get_letter_at_index(index: int) -> str:
         return letters[index]
 
