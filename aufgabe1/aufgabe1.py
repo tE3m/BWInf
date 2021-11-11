@@ -15,14 +15,14 @@ class ParkingLot:
 
     def __init__(self) -> None:
         self.normal_cars = []
-        self.sideways_cars = []
+        self._sideways_cars = []
         self._blocked_spots = {}
         max_letter = file.readline()[2]
-        for normal_car_letter in letters[:Util.get_index_of_letter(max_letter)]:
+        for normal_car_letter in letters[:Util.get_index_of_letter(max_letter)+1]:
             self.normal_cars.append(NormalCar(self, normal_car_letter))
         for sideways_car in range(int(file.readline())):
             sideways_car_letter, position = file.readline().split()
-            self.sideways_cars.append(SideWaysCar(self, sideways_car_letter, int(position)))
+            self._sideways_cars.append(SideWaysCar(self, sideways_car_letter, int(position)))
         file.close()
 
     @property
