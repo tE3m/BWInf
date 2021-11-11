@@ -2,6 +2,14 @@ from sys import argv
 from string import ascii_uppercase as letters
 
 
+class SpaceTakenError(ValueError):
+    pass
+
+
+class NonExistentSpaceError(ValueError):
+    pass
+
+
 class Util:
 
     def get_index_of_letter(letter: str) -> int:
@@ -13,7 +21,8 @@ class Util:
 
 class ParkingLot:
 
-    def __init__(self) -> None:
+    def __init__(self, file_path: str) -> None:
+        file = open(file_path, "r")
         self.normal_cars = []
         self._sideways_cars = []
         self._blocked_spots = {}
@@ -30,7 +39,9 @@ class ParkingLot:
         return sum(list(self._blocked_spots.values()), [])
 
     def update_blocked_spots(self, car) -> None:
-        self._blocked_spots[car] = [car.position, car.position+1]
+        if car.position in self.blocked_spots and self.find_blocking_car(car.position) != car or car.position + 1 in self.blocked_spots and self.find_blocking_car(car.position+1) != car:
+            raise SpaceTakenError("Dieser Platz ist bereits belegt.")
+        self._blocked_spots[car] = [car.position, car.position + 1]
 
 
 class Car:
@@ -57,12 +68,11 @@ class SideWaysCar(Car):
 
     @position.setter
     def position(self, position: int) -> None:
-        self._position = position
-        self.parent_lot.update_blocked_spots(self)
-
-
-file = open(
-    "/home/tarek/Projects/BWInf/Beispiele/a1-Schiebeparkplatz/beispieldaten/parkplatz0.txt",
-    "r")  # TODO: Änderung zu argv[1]
-
-parking_lot = ParkingLot()
+        if position >= len(self.parent_lot.normal_cars)-1 or position < 0:
+            raise NonExistentSpaceError("Diesen Platz gibt es nicht.")
+        old_position = self._position
+        try:
+            self._position = position
+            self.parent_lot.update_blocked_spots(self)
+        except SpaceTakenError:
+            self._position = old_position
