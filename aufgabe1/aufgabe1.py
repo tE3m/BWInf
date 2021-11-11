@@ -1,5 +1,6 @@
 from sys import argv
 from string import ascii_uppercase as letters
+from copy import deepcopy
 
 
 class SpaceTakenError(ValueError):
@@ -45,11 +46,67 @@ class ParkingLot:
             raise SpaceTakenError("Dieser Platz ist bereits belegt.")
         self._blocked_spots[car] = [car.position, car.position + 1]
 
+    @property
+    def solution(self) -> dict:
+        solution_dict = {}
+        for normal_car in self.normal_cars:
+            solution_dict[normal_car.letter] = self.find_solution(normal_car.slot_number, [])
+            pass
+        return solution_dict
+
+    def find_solution(self, position: int, steps=[]) -> list:
+        if position in self.blocked_spots:
+            sideways_cars_copy = deepcopy(self._sideways_cars)
+            blocked_spots_copy = deepcopy(self._blocked_spots)
+            blocking_car = self.find_blocking_car(position)
+            position_difference = position - blocking_car.position
+            try:
+                disposition = min(abs(-2+position_difference), 1+position_difference)
+                if disposition == abs(-2+position_difference):
+                    disposition *= -1
+                blocking_car.position += disposition
+                steps.append({blocking_car.letter: disposition})
+            except ValueError:
+                try:
+                    disposition = max(abs(-2 + position_difference), 1 + position_difference)
+                    if disposition == abs(-2 + position_difference):
+                        disposition *= -1
+                    blocking_car.position += disposition
+                    steps.append({blocking_car.letter: disposition})
+                except ValueError:
+                    steps_right = self.find_solution(blocking_car.position+2, steps)
+                    steps_left = self.find_solution(blocking_car.position-1, steps)
+                    if steps_left == [-1] and steps_right == [-1]:
+                        steps = [-1]
+                    elif steps_left != [-1] and steps_right != [-1]:
+                        if steps_left <= steps_right:
+                            steps = steps_left
+                            steps.append({blocking_car.letter: -1})
+                        else:
+                            steps = steps_right
+                            steps.append({blocking_car.letter: 1})
+                    elif steps_left != [-1]:
+                        steps = steps_left
+                        steps.append({blocking_car.letter: -1})
+                    else:
+                        steps = steps_right
+                        steps.append({blocking_car.letter: 1})
+            self._sideways_cars = sideways_cars_copy
+            self._blocked_spots = blocked_spots_copy
+        return steps
+
+    def find_blocking_car(self, position: int):
+        return self._sideways_cars[int(self.blocked_spots.index(position) / 2)]
+
 
 class Car:
     def __init__(self, parent_lot: ParkingLot, letter: str) -> None:
         self.letter = letter
         self.parent_lot = parent_lot
+
+    @property
+    def is_movable(self) -> bool:
+        pass
 
 
 class NormalCar(Car):
@@ -57,12 +114,27 @@ class NormalCar(Car):
         super().__init__(parent_lot, letter)
         self.slot_number = Util.get_index_of_letter(self.letter)
 
+    @property
+    def is_movable(self) -> bool:
+        if self.slot_number in self.parent_lot.blocked_spots:
+            return False
+        else:
+            return True
+
 
 class SideWaysCar(Car):
     def __init__(self, parent_lot: ParkingLot, letter: str, position: int) -> None:
         super().__init__(parent_lot, letter)
         self._position = position
         self.parent_lot.update_blocked_spots(self)
+
+    def is_movable(self, delta: int):
+        if delta > 0:
+            delta += 1
+        if self.position + delta in self.parent_lot.blocked_spots:
+            return False
+        else:
+            return True
 
     @property
     def position(self) -> int:
