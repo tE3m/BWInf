@@ -42,7 +42,9 @@ class ParkingLot:
         return sum(list(self._blocked_spots.values()), [])
 
     def update_blocked_spots(self, car) -> None:
-        if car.position in self.blocked_spots and self.find_blocking_car(car.position) != car or car.position + 1 in self.blocked_spots and self.find_blocking_car(car.position+1) != car:
+        if car.position in self.blocked_spots and self.find_blocking_car(
+                car.position) != car or car.position + 1 in self.blocked_spots and self.find_blocking_car(
+                car.position + 1) != car:
             raise SpaceTakenError("Dieser Platz ist bereits belegt.")
         self._blocked_spots[car] = [car.position, car.position + 1]
 
@@ -60,37 +62,38 @@ class ParkingLot:
             blocked_spots_copy = deepcopy(self._blocked_spots)
             blocking_car = self.find_blocking_car(position)
             position_difference = position - blocking_car.position
-            try:
-                disposition = min(abs(-2+position_difference), 1+position_difference)
-                if disposition == abs(-2+position_difference):
+            if blocking_car.is_movable(0):
+                disposition = min(abs(-2 + position_difference), 1 + position_difference)
+                if disposition == abs(-2 + position_difference):
                     disposition *= -1
-                blocking_car.position += disposition
-                steps.append({blocking_car.letter: disposition})
-            except ValueError:
-                try:
+                if blocking_car.is_movable(disposition):
+                    blocking_car.position += disposition
+                    steps.append({blocking_car.letter: disposition})
+                else:
                     disposition = max(abs(-2 + position_difference), 1 + position_difference)
                     if disposition == abs(-2 + position_difference):
                         disposition *= -1
-                    blocking_car.position += disposition
-                    steps.append({blocking_car.letter: disposition})
-                except ValueError:
-                    steps_right = self.find_solution(blocking_car.position+2, steps)
-                    steps_left = self.find_solution(blocking_car.position-1, steps)
-                    if steps_left == [-1] and steps_right == [-1]:
-                        steps = [-1]
-                    elif steps_left != [-1] and steps_right != [-1]:
-                        if steps_left <= steps_right:
-                            steps = steps_left
-                            steps.append({blocking_car.letter: -1})
-                        else:
-                            steps = steps_right
-                            steps.append({blocking_car.letter: 1})
-                    elif steps_left != [-1]:
+                    if blocking_car.is_movable(disposition):
+                        blocking_car.position += disposition
+                        steps.append({blocking_car.letter: disposition})
+            else:
+                steps_right = self.find_solution(blocking_car.position + 2, steps)
+                steps_left = self.find_solution(blocking_car.position - 1, steps)
+                if steps_left == [-1] and steps_right == [-1]:
+                    steps = [-1]
+                elif steps_left != [-1] and steps_right != [-1]:
+                    if steps_left <= steps_right:
                         steps = steps_left
                         steps.append({blocking_car.letter: -1})
                     else:
                         steps = steps_right
                         steps.append({blocking_car.letter: 1})
+                elif steps_left != [-1]:
+                    steps = steps_left
+                    steps.append({blocking_car.letter: -1})
+                else:
+                    steps = steps_right
+                    steps.append({blocking_car.letter: 1})
             self._sideways_cars = sideways_cars_copy
             self._blocked_spots = blocked_spots_copy
         return steps
@@ -132,20 +135,21 @@ class SideWaysCar(Car):
         self.parent_lot.update_blocked_spots(self)
 
     def is_movable(self, delta: int):
+        if delta == 0:
+            return self.is_movable(-1) or self.is_movable(1)
         if delta > 0:
             delta += 1
-        if self.position + delta in self.parent_lot.blocked_spots:
+        if self.position + delta in self.parent_lot.blocked_spots or self.position + delta not in range(0, len(self.parent_lot.normal_cars)):
             return False
         else:
             return True
 
     @Car.position.setter
     def position(self, position: int) -> None:
-        if position >= len(self.parent_lot.normal_cars) - 1 or position < 0:
-            raise NonExistentSpaceError("Diesen Platz gibt es nicht.")
         old_position = self._position
         try:
             self._position = position
             self.parent_lot.update_blocked_spots(self)
-        except SpaceTakenError:
+        except SpaceTakenError or NonExistentSpaceError as error:
             self._position = old_position
+            raise error
