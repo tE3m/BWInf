@@ -56,7 +56,9 @@ class ParkingLot:
             pass
         return solution_dict
 
-    def find_solution(self, position: int, steps=[]) -> list:
+    def find_solution(self, position: int, steps=None) -> list:
+        if steps is None:
+            steps = []
         if position in self.blocked_spots:
             sideways_cars_copy = deepcopy(self._sideways_cars)
             blocked_spots_copy = deepcopy(self._blocked_spots)
