@@ -59,7 +59,9 @@ class ParkingLot:
     def find_solution(self, position: int, steps=None) -> list:
         if steps is None:
             steps = []
-        if position in self.blocked_spots:
+        if position not in range(len(self.normal_cars)):
+            steps = [-1]
+        elif position in self.blocked_spots:
             sideways_cars_copy = deepcopy(self._sideways_cars)
             blocked_spots_copy = deepcopy(self._blocked_spots)
             blocking_car = self.find_blocking_car(position)
@@ -78,6 +80,8 @@ class ParkingLot:
                     if blocking_car.is_movable(disposition):
                         blocking_car.position += disposition
                         steps.append({blocking_car.letter: disposition})
+                    else:
+                        steps = [-1]
             else:
                 steps_right = self.find_solution(blocking_car.position + 2, steps)
                 steps_left = self.find_solution(blocking_car.position - 1, steps)
