@@ -50,7 +50,7 @@ class ParkingLot:
     def solution(self) -> dict:
         solution_dict = {}
         for normal_car in self.normal_cars:
-            solution_dict[normal_car.letter] = self.find_solution(normal_car.slot_number, [])
+            solution_dict[normal_car.letter] = self.find_solution(normal_car.position, [])
             pass
         return solution_dict
 
@@ -100,9 +100,14 @@ class ParkingLot:
 
 
 class Car:
-    def __init__(self, parent_lot: ParkingLot, letter: str) -> None:
+    def __init__(self, parent_lot: ParkingLot, letter: str, position: int) -> None:
         self.letter = letter
         self.parent_lot = parent_lot
+        self._position = position
+
+    @property
+    def position(self) -> int:
+        return self._position
 
     @property
     def is_movable(self) -> bool:
@@ -111,12 +116,11 @@ class Car:
 
 class NormalCar(Car):
     def __init__(self, parent_lot: ParkingLot, letter: str) -> None:
-        super().__init__(parent_lot, letter)
-        self.slot_number = Util.get_index_of_letter(self.letter)
+        super().__init__(parent_lot, letter, Util.get_index_of_letter(letter))
 
     @property
     def is_movable(self) -> bool:
-        if self.slot_number in self.parent_lot.blocked_spots:
+        if self.position in self.parent_lot.blocked_spots:
             return False
         else:
             return True
@@ -124,8 +128,7 @@ class NormalCar(Car):
 
 class SideWaysCar(Car):
     def __init__(self, parent_lot: ParkingLot, letter: str, position: int) -> None:
-        super().__init__(parent_lot, letter)
-        self._position = position
+        super().__init__(parent_lot, letter, position)
         self.parent_lot.update_blocked_spots(self)
 
     def is_movable(self, delta: int):
@@ -136,13 +139,9 @@ class SideWaysCar(Car):
         else:
             return True
 
-    @property
-    def position(self) -> int:
-        return self._position
-
-    @position.setter
+    @Car.position.setter
     def position(self, position: int) -> None:
-        if position >= len(self.parent_lot.normal_cars)-1 or position < 0:
+        if position >= len(self.parent_lot.normal_cars) - 1 or position < 0:
             raise NonExistentSpaceError("Diesen Platz gibt es nicht.")
         old_position = self._position
         try:
