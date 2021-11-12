@@ -37,6 +37,26 @@ class ParkingLot:
             self._sideways_cars.append(SideWaysCar(self, sideways_car_letter, int(position)))
         file.close()
 
+    def __str__(self) -> str:
+        solution = self.solution
+        output = ""
+        for slot in solution:
+            if solution[slot] == [-1]:
+                output += slot + ": nicht lösbar\n"
+            else:
+                output += slot + ": "
+                for element in solution[slot]:
+                    (blocking_car, move) = next(iter(element.items()))
+                    if move > 0:
+                        direction = "rechts"
+                    else:
+                        direction = "links"
+                    output += blocking_car + " " + str(abs(move)) + " " + direction
+                    if element != solution[slot][-1]:
+                        output += ", "
+                output += "\n"
+        return output
+
     @property
     def blocked_spots(self) -> list:
         return sum(list(self._blocked_spots.values()), [])
