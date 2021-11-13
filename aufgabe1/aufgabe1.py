@@ -138,10 +138,6 @@ class Car:
     def position(self) -> int:
         return self._position
 
-    @property
-    def is_movable(self) -> bool:
-        pass
-
 
 class NormalCar(Car):
     def __init__(self, parent_lot: ParkingLot, letter: str) -> None:
@@ -160,7 +156,7 @@ class SideWaysCar(Car):
         super().__init__(parent_lot, letter, position)
         self.parent_lot.update_blocked_spots(self)
 
-    def is_movable(self, delta: int):
+    def is_movable(self, delta: int) -> bool:
         if delta == 0:
             return self.is_movable(-1) or self.is_movable(1)
         if delta > 0:
