@@ -61,19 +61,23 @@ class ParkingLot:
     def blocked_spots(self) -> list:
         return sum(list(self._blocked_spots.values()), [])
 
-    def update_blocked_spots(self, car) -> None:
-        if car.position in self.blocked_spots and self.find_blocking_car(
+    def update_blocked_spots(self, car=None) -> None:
+        if car is None:
+            for blocking_car in self._blocked_spots:
+                self._blocked_spots[blocking_car] = [blocking_car.position, blocking_car.position + 1]
+        elif car.position in self.blocked_spots and self.find_blocking_car(
                 car.position) != car or car.position + 1 in self.blocked_spots and self.find_blocking_car(
                 car.position + 1) != car:
             raise SpaceTakenError("Dieser Platz ist bereits belegt.")
-        self._blocked_spots[car] = [car.position, car.position + 1]
+        else:
+            self._blocked_spots[car] = [car.position, car.position + 1]
+        pass
 
     @property
     def solution(self) -> dict:
         solution_dict = {}
         for normal_car in self.normal_cars:
             solution_dict[normal_car.letter] = self.find_solution(normal_car.position, [])
-            pass
         return solution_dict
 
     def find_solution(self, position: int, steps=None) -> list:
@@ -169,8 +173,8 @@ class SideWaysCar(Car):
     @Car.position.setter
     def position(self, position: int) -> None:
         old_position = self._position
+        self._position = position
         try:
-            self._position = position
             self.parent_lot.update_blocked_spots(self)
         except SpaceTakenError or NonExistentSpaceError as error:
             self._position = old_position
