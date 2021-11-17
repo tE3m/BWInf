@@ -131,6 +131,17 @@ class ParkingLot:
     def find_blocking_car(self, position: int):
         return self._sideways_cars[int(self.blocked_spots.index(position) / 2)]
 
+    def visual(self) -> None:
+        for normal_car in self.normal_cars:
+            print(normal_car.letter, end=" ")
+        print()
+        for position in range(len(self.normal_cars)):
+            if position in self.blocked_spots:
+                print(self.find_blocking_car(position).letter, end=" ")
+            else:
+                print(" ", end=" ")
+        print()
+
 
 class Car:
     def __init__(self, parent_lot: ParkingLot, letter: str, position: int) -> None:
