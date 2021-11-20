@@ -23,8 +23,10 @@ class Scale:
         output = ""
         for index, item in enumerate(self.possible_weights.items()):
             weight, combination = item
+            if combination[0] > 0:
+                combination[0] = "+" + str(combination[0])
             if combination[0]:
-                output += "{}g ({}g):\n    links:{}\n    rechts:{}\n".format(weight, -combination[0],
+                output += "{}g ({}g):\n    links:{}\n    rechts:{}\n".format(weight, combination[0],
                                                                              combination[1], combination[2])
             else:
                 output += "{}g:\n    links:{}\n    rechts:{}\n".format(weight, combination[1], combination[2])
@@ -67,16 +69,18 @@ class Scale:
         if weight > 0:
             weight_decrease = current_combination[1]
             weight_increase = current_combination[2]
+            weight_factor = 1
         else:
             weight_decrease = current_combination[2]
             weight_increase = current_combination[1]
             weight *= -1
+            weight_factor = -1
         # Falls es noch kein `dict` mit Gewichten gibt, kopiere das des Objekts
         if weights_copy is None:
             weights_copy = self.weights.copy()
         # Gibt es keine Gewichte mehr, kann keine Lösung gefunden werden
         elif not weights_copy:
-            current_combination[0] = weight
+            current_combination[0] = weight * weight_factor
             return current_combination
         # Ist das gesuchte Gewicht darstellbar als ein einziges Gewichtsstück, kann dieses als Lösung zurückgegeben
         # werden
@@ -122,7 +126,7 @@ class Scale:
             remaining_weight = weight - min_difference
         # Nähert keiner der beiden Ansätze sich der Lösung, kann keine bessere Lösung gefunden werden
         else:
-            current_combination[0] = weight
+            current_combination[0] = weight * weight_factor
             return current_combination
         # Rekursion, falls noch Gewicht verbleibt
         return self.find_combination(remaining_weight, weights_copy, current_combination)
