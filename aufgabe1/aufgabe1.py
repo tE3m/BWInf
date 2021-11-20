@@ -49,7 +49,7 @@ class ParkingLot:
     def __str__(self) -> str:
         # Formatiert die Lösung anschaulich
         solution = self.solution
-        output = ""
+        output = self.visual()
         for slot in solution:
             if solution[slot] is False:
                 output += slot + ": nicht lösbar\n"
@@ -260,5 +260,4 @@ class SideWaysCar(Car):
 
 if __name__ == '__main__':
     parkplatz = ParkingLot(argv[1])
-    print(parkplatz.visual())
     print(parkplatz)
