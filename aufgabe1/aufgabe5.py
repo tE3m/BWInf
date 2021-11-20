@@ -1,3 +1,4 @@
+import sys
 from bisect import bisect_left
 
 
@@ -49,6 +50,13 @@ class Scale:
         """Attempts to find a combination of weights as close to the argument as possible."""
         if not current_combination:
             current_combination = [None, [], []]
+        if weight > 0:
+            weight_decrease = current_combination[1]
+            weight_increase = current_combination[2]
+        else:
+            weight_decrease = current_combination[2]
+            weight_increase = current_combination[1]
+            weight *= -1
         if weights_copy is None:
             weights_copy = self.weights.copy()
         elif not weights_copy:
@@ -56,13 +64,42 @@ class Scale:
             return current_combination
         if weight in weights_copy.keys():
             current_combination[0] = 0
-            current_combination[2].append(weight)
+            weight_increase.append(weight)
             return current_combination
+        min_difference: int = None
+        difference_combination: list
+        for right_weight in weights_copy.keys():
+            for left_weight in weights_copy.keys():
+                if left_weight == right_weight:
+                    continue
+                weight_difference = right_weight-left_weight
+                if weight_difference == weight:
+                    current_combination[0] = 0
+                    weight_decrease.append(left_weight)
+                    weight_increase.append(right_weight)
+                    return current_combination
+                if not min_difference or abs(weight - weight_difference) < abs(weight - min_difference):
+                    min_difference = weight_difference
+                    difference_combination = [left_weight, right_weight]
         weight_keys = [key for key in weights_copy]
         weight_keys_index = bisect_left(weight_keys, weight)
-        if not weight_keys_index:
+        if weight_keys_index and min_difference and abs(weight-weight_keys[weight_keys_index - 1]) <= abs(weight-min_difference) or weight_keys_index and not min_difference:
+            max_weight = weight_keys[weight_keys_index - 1]
+            self.remove_weight(weights_copy, max_weight)
+            weight_increase.append(max_weight)
+            remaining_weight = weight - max_weight
+        elif min_difference and abs(weight-min_difference) < weight:
+            self.remove_weight(weights_copy, difference_combination[0])
+            self.remove_weight(weights_copy, difference_combination[1])
+            weight_decrease.append(difference_combination[0])
+            weight_increase.append(difference_combination[1])
+            remaining_weight = weight - min_difference
+        else:
+            current_combination[0] = weight
             return current_combination
-        max_weight = weight_keys[weight_keys_index - 1]
-        self.remove_weight(weights_copy, max_weight)
-        current_combination[2].append(max_weight)
-        return self.find_combination(weight - max_weight, weights_copy, current_combination)
+        return self.find_combination(remaining_weight, weights_copy, current_combination)
+
+
+if __name__ == '__main__':
+    scale = Scale(sys.argv[1])
+    print(scale)
