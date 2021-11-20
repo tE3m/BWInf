@@ -1,3 +1,6 @@
+from bisect import bisect_left
+
+
 class Scale:
     """A market scale scenario"""
 
@@ -17,12 +20,11 @@ class Scale:
         for index, item in enumerate(self.possible_weights.items()):
             weight, combination = item
             if combination:
-                achieved_weight = combination.pop(0)
-                weight_difference = achieved_weight - weight
-                if weight_difference:
-                    output += "{}g ({}g): {}\n".format(weight, weight_difference, combination)
+                if combination[0]:
+                    output += "{}g ({}g):\n    links:{}\n    rechts:{}\n".format(weight, -combination[0],
+                                                                                 combination[1], combination[2])
                 else:
-                    output += "{}g: {}\n".format(weight, combination)
+                    output += "{}g:    links:{}\n    rechts:{}\n".format(weight, combination[1], combination[2])
         return output
 
     @property
@@ -34,5 +36,34 @@ class Scale:
             self._possible_weights[weight] = self.find_combination(weight)
         return self._possible_weights
 
-    def find_combination(self, weight: int) -> list[int, list[int], list[int]]:
-        pass
+    @staticmethod
+    def remove_weight(weights: dict[int, int], to_remove: int):
+        if to_remove not in weights.keys():
+            raise ValueError
+        weights[to_remove] -= 1
+        if not weights[to_remove]:
+            del weights[to_remove]
+
+    def find_combination(self, weight: int, weights_copy: dict[int, int] = None,
+                         current_combination: list[int, list[int], list[int]] = None) -> list[
+        int, list[int], list[int]]:
+        """Attempts to find a combination of weights as close to the argument as possible."""
+        if not current_combination:
+            current_combination = [None, [], []]
+        if weights_copy is None:
+            weights_copy = self.weights.copy()
+        elif not weights_copy:
+            current_combination[0] = weight
+            return current_combination
+        if weight in weights_copy.keys():
+            current_combination[0] = 0
+            current_combination[2].append(weight)
+            return current_combination
+        weight_keys = [key for key in weights_copy]
+        weight_keys_index = bisect_left(weight_keys, weight)
+        if not weight_keys_index:
+            return current_combination
+        max_weight = weight_keys[weight_keys_index - 1]
+        self.remove_weight(weights_copy, max_weight)
+        current_combination[2].append(max_weight)
+        return self.find_combination(weight - max_weight, weights_copy, current_combination)
