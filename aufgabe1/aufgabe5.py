@@ -19,12 +19,11 @@ class Scale:
         output = ""
         for index, item in enumerate(self.possible_weights.items()):
             weight, combination = item
-            if combination:
-                if combination[0]:
-                    output += "{}g ({}g):\n    links:{}\n    rechts:{}\n".format(weight, -combination[0],
-                                                                                 combination[1], combination[2])
-                else:
-                    output += "{}g:    links:{}\n    rechts:{}\n".format(weight, combination[1], combination[2])
+            if combination[0]:
+                output += "{}g ({}g):\n    links:{}\n    rechts:{}\n".format(weight, -combination[0],
+                                                                             combination[1], combination[2])
+            else:
+                output += "{}g:\n    links:{}\n    rechts:{}\n".format(weight, combination[1], combination[2])
         return output
 
     @property
