@@ -46,7 +46,7 @@ class Scale:
 
     def find_combination(self, weight: int, weights_copy: dict[int, int] = None,
                          current_combination: list[int, list[int], list[int]] = None) -> list[
-        int, list[int], list[int]]:
+                         int, list[int], list[int]]:
         """Attempts to find a combination of weights as close to the argument as possible."""
         if not current_combination:
             current_combination = [None, [], []]
@@ -83,7 +83,8 @@ class Scale:
                     difference_combination = [left_weight, right_weight]
         weight_keys = [key for key in weights_copy]
         weight_keys_index = bisect_left(weight_keys, weight)
-        if weight_keys_index and min_difference and abs(weight-weight_keys[weight_keys_index - 1]) <= abs(weight-min_difference) or weight_keys_index and not min_difference:
+        if weight_keys_index and min_difference and abs(weight-weight_keys[weight_keys_index - 1]) <=\
+                abs(weight-min_difference) or weight_keys_index and not min_difference:
             max_weight = weight_keys[weight_keys_index - 1]
             self.remove_weight(weights_copy, max_weight)
             weight_increase.append(max_weight)
