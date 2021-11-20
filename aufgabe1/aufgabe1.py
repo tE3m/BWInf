@@ -24,18 +24,17 @@ class Util:
 
 class ParkingLot:
 
-    def __init__(self, file_path: str) -> None:
-        file = open(file_path, "r")
+    def __init__(self, path: str) -> None:
         self.normal_cars = []
         self._sideways_cars = []
         self._blocked_spots = {}
-        max_letter = file.readline()[2]
-        for normal_car_letter in letters[:Util.get_index_of_letter(max_letter) + 1]:
-            self.normal_cars.append(NormalCar(self, normal_car_letter))
-        for sideways_car in range(int(file.readline())):
-            sideways_car_letter, position = file.readline().split()
-            self._sideways_cars.append(SideWaysCar(self, sideways_car_letter, int(position)))
-        file.close()
+        with open(path, "r") as file:
+            max_letter = file.readline()[2]
+            for normal_car_letter in letters[:Util.get_index_of_letter(max_letter) + 1]:
+                self.normal_cars.append(NormalCar(self, normal_car_letter))
+            for sideways_car in range(int(file.readline())):
+                sideways_car_letter, position = file.readline().split()
+                self._sideways_cars.append(SideWaysCar(self, sideways_car_letter, int(position)))
 
     def __str__(self) -> str:
         solution = self.solution
