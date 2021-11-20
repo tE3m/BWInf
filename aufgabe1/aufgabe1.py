@@ -205,7 +205,7 @@ class ParkingLot:
                 string += " "
             else:
                 string += "  "
-        string += "\n"
+        string += "\n\n"
         return string
 
 
