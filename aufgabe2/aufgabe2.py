@@ -36,12 +36,30 @@ class Route:
     def range_per_day(self) -> list[Hotel]:
         return [hotel for hotel in self.hotels if self.position < hotel.distance < self.position + 360]
 
-    def find_route(self) -> list[Hotel]:
-        chosen_hotels = []
-        while self.position < self.total_distance - 360:
-            chosen_hotels.append(max(self.range_per_day(), key=lambda h: h.rating))
-            self.position = chosen_hotels[-1].distance
-        return chosen_hotels
+    def find_route(self) -> None:
+        non_reducible = []
+        self.hotels.sort()
+        while len(self.hotels) > 4:
+            min_hotel = None
+            for hotel in self.hotels:
+                if min_hotel is None or hotel not in non_reducible and hotel < min_hotel:
+                    min_hotel = hotel
+            if len(non_reducible) == len(self.hotels):
+                break
+            min_hotel_index = self.hotels.index(min_hotel)
+            if min_hotel_index and min_hotel_index != len(self.hotels)-1:
+                if self.hotels[min_hotel_index+1].distance - self.hotels[min_hotel_index-1].distance <= 360:
+                    del self.hotels[min_hotel_index]
+                    continue
+            elif not min_hotel_index:
+                if self.hotels[1].distance <= 360:
+                    del self.hotels[min_hotel_index]
+                    continue
+            elif min_hotel_index == len(self.hotels)-1:
+                if self.total_distance - self.hotels[-2].distance <= 360:
+                    del self.hotels[min_hotel_index]
+                    continue
+            non_reducible.append(self.hotels[min_hotel_index])
 
 
 if __name__ == '__main__':
