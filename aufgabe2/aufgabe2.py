@@ -11,6 +11,7 @@ class Hotel:
         self.distance = distance
         self.rating = rating
         self.parent_route = parent_route
+        self._daily_range = None
 
     def __repr__(self) -> str:
         return "Hotel({}, {})".format(self.distance, self.rating)
@@ -26,7 +27,9 @@ class Hotel:
     @property
     def daily_range(self) -> list:
         """Stellt die Liste von Hotels dar, die innerhalb eines Tages erreicht werden können"""
-        return self.parent_route.range_per_day(self)
+        if not self._daily_range:
+            self._daily_range = self.parent_route.range_per_day(self)
+        return self._daily_range
 
 
 class Route:
