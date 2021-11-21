@@ -36,7 +36,7 @@ class ParkingLot:
     def __init__(self, path: str) -> None:
         # Initialisierung aller Attribute
         self.normal_cars = []
-        self._sideways_cars = []
+        self.sideways_cars = []
         self._blocked_spots = {}
         with open(path, "r") as file:
             max_letter = file.readline()[2]
@@ -44,7 +44,7 @@ class ParkingLot:
                 self.normal_cars.append(NormalCar(self, normal_car_letter))
             for sideways_car in range(int(file.readline())):
                 sideways_car_letter, position = file.readline().split()
-                self._sideways_cars.append(SideWaysCar(self, sideways_car_letter, int(position)))
+                self.sideways_cars.append(SideWaysCar(self, sideways_car_letter, int(position)))
 
     def __str__(self) -> str:
         # Formatiert die Lösung anschaulich
@@ -96,7 +96,7 @@ class ParkingLot:
         :param position: die Position
         :return: ein `SidewaysCar`
         """
-        return self._sideways_cars[int(self.blocked_spots.index(position) / 2)]
+        return self.sideways_cars[int(self.blocked_spots.index(position) / 2)]
 
     @property
     def solution(self) -> dict:
