@@ -49,7 +49,8 @@ class HexNumber:
         index = 0
         for line in lines:
             for digit in self.digits:
-                for offset, segment in enumerate(line.split("   ")):
+                segments = line.split("   ")
+                for offset, segment in enumerate(segments):
                     segment = segment if digit.representation[index+offset] else "".join(" " for _ in segment)
                     if line == "#######":
                         if segment[:2] == "  " and (index == 0 or index == 3):
@@ -60,5 +61,5 @@ class HexNumber:
                             segment = "##" + segment[2:] if digit.representation[index-2] else segment
                     buffer += segment + "   "
             buffer += "\n"
-            index += len(line.split("   "))
+            index += len(segments)
         return buffer
