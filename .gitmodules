@@ -1,3 +1,3 @@
-[submodule "Beispiele"]
-	path = Beispiele
+[submodule "beispiele"]
+	path = Runde 1/beispiele
 	url = https://git.bwinf.de/bwinf/bwinf40-runde1.git
