@@ -44,7 +44,7 @@ class HexDigit:
     def digit_with_distance(self, distance: int, moves: int):
         for new_digit in range(0, 16):
             if self.segment_difference(new_digit) == distance and self.move_distance(new_digit) <= moves:
-                return moves-self.move_distance(new_digit), new_digit
+                return moves - self.move_distance(new_digit), new_digit
 
 
 class HexNumber:
@@ -68,14 +68,14 @@ class HexNumber:
             for digit in self.digits:
                 segments = line.split("   ")
                 for offset, segment in enumerate(segments):
-                    segment = segment if digit.representation[index+offset] else "".join(" " for _ in segment)
+                    segment = segment if digit.representation[index + offset] else "".join(" " for _ in segment)
                     if line == "#######":
                         if segment[:2] == "  " and (index == 0 or index == 3):
-                            segment = "##" + segment[2:] if digit.representation[index+1] else segment
-                            segment = segment[:-2] + "##" if digit.representation[index+2] else segment
+                            segment = "##" + segment[2:] if digit.representation[index + 1] else segment
+                            segment = segment[:-2] + "##" if digit.representation[index + 2] else segment
                         if segment[-2:] == "  " and (index == 3 or index == 6):
-                            segment = segment[:-2] + "##" if digit.representation[index-1] else segment
-                            segment = "##" + segment[2:] if digit.representation[index-2] else segment
+                            segment = segment[:-2] + "##" if digit.representation[index - 1] else segment
+                            segment = "##" + segment[2:] if digit.representation[index - 2] else segment
                     buffer += segment + "   "
             buffer += "\n"
             index += len(segments)
@@ -89,7 +89,8 @@ class HexNumber:
                 if digit.move_distance(higher_digit) <= self.moves:
                     if digit.segment_difference(higher_digit) == 0:
                         self.moves -= digit.move_distance(higher_digit)
-                        to_be_removed = {index: [segment for segment in digit.differing_segments(higher_digit) if digit.representation[segment]]}
+                        to_be_removed = {index: [segment for segment in digit.differing_segments(higher_digit) if
+                                                 digit.representation[segment]]}
                     else:
                         old_moves = self.moves
                         self.moves -= digit.move_distance(higher_digit)
@@ -97,7 +98,8 @@ class HexNumber:
                         if to_be_removed is None:
                             self.moves = old_moves
                             continue
-                    to_be_added = (segment for segment in digit.differing_segments(higher_digit) if NUMBERS[higher_digit][segment])
+                    to_be_added = (segment for segment in digit.differing_segments(higher_digit) if
+                                   NUMBERS[higher_digit][segment])
                     for other_digit, moves in to_be_removed.items():
                         for segment in moves:
                             self.digits[other_digit].representation[segment] = False
@@ -114,7 +116,8 @@ class HexNumber:
                 if moves_and_digit is not None:
                     self.moves, new_digit = moves_and_digit
                     missing -= amount
-                    segments[index] = [segment for segment in digit.differing_segments(new_digit) if digit.representation[segment]]
+                    segments[index] = [segment for segment in digit.differing_segments(new_digit) if
+                                       digit.representation[segment]]
             if not missing:
                 return segments
 
