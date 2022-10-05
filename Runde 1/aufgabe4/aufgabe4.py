@@ -44,6 +44,15 @@ class Workshop:
         self.jobs = [Job(*args.strip().split(" ")) for args in lines if args != "\n"]
         self.current_time = 0
 
+    def fifo(self):
+        sorted_jobs = sorted(self.jobs)
+        for job in sorted_jobs:
+            received = job.time_received
+            if received > self.current_time:
+                # Liegt der Eingang in der Zukunft, beginnt die Arbeit zum nächsten Zeitpunkt innerhalb der
+                # Öffnungszeiten
+                self.current_time = self.next_working_hours(received)
+
     @staticmethod
     def is_working_hours(time: int) -> bool:
         """
