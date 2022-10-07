@@ -1,5 +1,10 @@
 from sys import argv
 
+# Minuten eines Arbeitstags
+WORKDAY = 480
+# Minuten eines Kalendertags
+CALENDARDAY = 1440
+
 
 class Job:
     # Attribute
@@ -61,7 +66,7 @@ class Workshop:
         :param time: der zu prüfende Zeitpunkt
         :return: Wahrheitswert, ob zu diesem Zeitpunkt geöffnet ist
         """
-        return 540 <= (time % 1440) < 1020
+        return 540 <= (time % CALENDARDAY) < 1020
 
     def next_working_hours(self, time: int | None = None) -> int:
         """
@@ -72,7 +77,7 @@ class Workshop:
         """
         time = self.current_time if time is None else time
         assert time >= self.current_time
-        return time if Workshop.is_working_hours(time) else (((time // 1440) + 1) * 1440) + 540
+        return time if Workshop.is_working_hours(time) else (((time // CALENDARDAY) + 1) * CALENDARDAY) + 540
 
     def remaining_working_minutes(self) -> int:
         """
@@ -81,7 +86,7 @@ class Workshop:
         :return: die verbleibenden Arbeitsminuten am derzeitigen Tag
         """
         assert Workshop.is_working_hours(self.current_time)
-        return 1020 - self.current_time % 1440
+        return 1020 - self.current_time % CALENDARDAY
 
 
 if __name__ == '__main__':
