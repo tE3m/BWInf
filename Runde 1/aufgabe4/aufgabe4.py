@@ -1,9 +1,17 @@
+from functools import cached_property
 from sys import argv
 
 # Minuten eines Arbeitstags
 WORKDAY = 480
 # Minuten eines Kalendertags
 CALENDARDAY = 1440
+
+
+def minuten_zu_tagen(minuten: int) -> str:
+    tage = minuten // 1440
+    stunden = (minuten // 60) % 24
+    rest = minuten % 60
+    return "{} Tage, {} Stunden und {} Minuten".format(tage, stunden, str(rest).zfill(2))
 
 
 class Job:
@@ -23,7 +31,7 @@ class Job:
             time_received=self.time_received, duration=self.duration, time_started=self.time_started)
 
     def __str__(self) -> str:
-        return "Auftrag:\n    Eingangszeit: {time_received}\n    Dauer: {duration}\n    Bearbeitungsbeginn: " \
+        return "Auftrag:\n    Eingangszeit: {time_received}\n    Dauer: {duration}\n    Bearbeitungsbeginn:" \
                " {time_started}".format(time_received=self.time_received,
                                         duration=self.duration,
                                         time_started=self.time_started)
@@ -32,7 +40,9 @@ class Job:
         assert type(other) == Job
         return self.time_received < other.time_received
 
-    @property
+    # TODO Performance vs privates Attribut und einmalige Berechnung prüfen
+    # TODO Abweichung von erwarteter Arbeitszeit einberechnen
+    @cached_property
     def time_finished(self):
         assert type(self.time_started) == int
         today = Workshop.remaining_working_minutes(self.time_started)
@@ -53,10 +63,14 @@ class Workshop:
         sorted_jobs = sorted(self.jobs)
         for job in sorted_jobs:
             received = job.time_received
-            if received > self.current_time:
+            if received >= self.current_time:
                 # Liegt der Eingang in der Zukunft, beginnt die Arbeit zum nächsten Zeitpunkt innerhalb der
                 # Öffnungszeiten
-                self.current_time = self.next_working_hours(received)
+                job.time_started = received
+            else:
+                job.time_started = self.current_time
+
+            self.current_time = job.time_finished
 
     @staticmethod
     def is_working_hours(time: int) -> bool:
