@@ -35,8 +35,8 @@ class Job:
     @property
     def time_finished(self):
         assert type(self.time_started) == int
-        # TODO Arbeitszeiten berücksichtigen
-        return self.time_started + self.duration
+        today = Workshop.remaining_working_minutes(self.time_started)
+        return self.time_started + self.duration - today
 
 
 class Workshop:
@@ -79,14 +79,15 @@ class Workshop:
         assert time >= self.current_time
         return time if Workshop.is_working_hours(time) else (((time // CALENDARDAY) + 1) * CALENDARDAY) + 540
 
-    def remaining_working_minutes(self) -> int:
+    @staticmethod
+    def remaining_working_minutes(time: int) -> int:
         """
         Gibt die verbleibenden Arbeitsminuten am derzeitigen Tag zurück
 
         :return: die verbleibenden Arbeitsminuten am derzeitigen Tag
         """
-        assert Workshop.is_working_hours(self.current_time)
-        return 1020 - self.current_time % CALENDARDAY
+        assert Workshop.is_working_hours(time)
+        return 1020 - time % CALENDARDAY
 
 
 if __name__ == '__main__':
