@@ -69,7 +69,7 @@ class Workshop:
                 job.time_started = received
             else:
                 job.time_started = self.current_time
-
+            print(job)
             self.current_time = job.time_finished
 
     @staticmethod
@@ -106,3 +106,4 @@ class Workshop:
 
 if __name__ == '__main__':
     workshop = Workshop(argv[1])
+    workshop.fifo()
