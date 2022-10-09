@@ -56,7 +56,7 @@ class Workshop:
     def __init__(self, path: str):
         with open(path, "r") as file:
             lines = file.readlines()
-        self.jobs = [Job(*args.strip().split(" ")) for args in lines if args != "\n"]
+        self.jobs = [Job(*map(int, args.strip().split(" "))) for args in lines if args != "\n"]
         self.current_time = 0
 
     def fifo(self):
