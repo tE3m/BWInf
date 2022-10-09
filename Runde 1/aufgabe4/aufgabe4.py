@@ -31,10 +31,15 @@ class Job:
             time_received=self.time_received, duration=self.duration, time_started=self.time_started)
 
     def __str__(self) -> str:
-        return "Auftrag:\n    Eingangszeit: {time_received}\n    Dauer: {duration}\n    Bearbeitungsbeginn:" \
-               " {time_started}".format(time_received=self.time_received,
-                                        duration=self.duration,
-                                        time_started=self.time_started)
+        return_str = "Auftrag:\n    Eingangszeit: {time_received}\n    Dauer: {duration}\n".format(
+            time_received=minuten_zu_tagen(self.time_received),
+            duration=minuten_zu_tagen(self.duration))
+        return_str += "    Bearbeitungsbeginn: {time_started}\n    Verzögerung: {delay}\n    Bearbeitungsende: " \
+                      "{time_finished}\n ".format(time_started=minuten_zu_tagen(self.time_started),
+                                                  delay=minuten_zu_tagen(self.time_started - self.time_received),
+                                                  time_finished=minuten_zu_tagen(
+                                                      self.time_finished)) if self.time_started else ""
+        return return_str
 
     def __lt__(self, other) -> bool:
         assert type(other) == Job
