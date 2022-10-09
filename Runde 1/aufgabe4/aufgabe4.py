@@ -47,11 +47,15 @@ class Job:
 
     # TODO Performance vs privates Attribut und einmalige Berechnung prüfen
     # TODO Abweichung von erwarteter Arbeitszeit einberechnen
+    # TODO derzeitige Berechnung testen
     @cached_property
-    def time_finished(self):
+    def time_finished(self) -> int:
         assert type(self.time_started) == int
-        today = Workshop.remaining_working_minutes(self.time_started)
-        return self.time_started + self.duration - today
+        full_days = (self.duration // WORKDAY) * CALENDARDAY
+        remainder = self.duration % WORKDAY
+        if remainder > Workshop.remaining_working_minutes(self.time_started):
+            remainder += 960
+        return self.time_started + full_days + remainder
 
 
 class Workshop:
