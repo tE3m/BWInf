@@ -1,5 +1,6 @@
 from functools import cached_property
 from sys import argv
+from typing import TypedDict
 
 # Minuten eines Arbeitstags
 WORKDAY = 480
@@ -37,7 +38,7 @@ class Job:
         if self.time_started:
             return_str += "    Bearbeitungsbeginn: {time_started}\n    Verzögerung: {delay}\n    Bearbeitungsende: " \
                           "{time_finished}\n ".format(time_started=minuten_zu_tagen(self.time_started),
-                                                      delay=minuten_zu_tagen(self.time_started - self.time_received),
+                                                      delay=minuten_zu_tagen(self.delay),
                                                       time_finished=minuten_zu_tagen(self.time_finished))
         return return_str
 
@@ -57,6 +58,11 @@ class Job:
             remainder += 960
         return self.time_started + full_days + remainder
 
+    @cached_property
+    def delay(self) -> int:
+        assert type(self.time_started) == int
+        return self.time_finished - self.time_received
+
 
 class Workshop:
     jobs: list[Job]
@@ -68,7 +74,12 @@ class Workshop:
         self.jobs = [Job(*map(int, args.strip().split(" "))) for args in lines if args != "\n"]
         self.current_time = 0
 
-    def fifo(self):
+    class Result(TypedDict):
+        time_finished: int
+        avg_waiting_time: int
+        max_waiting_time: int
+
+    def fifo(self) -> Result:
         sorted_jobs = sorted(self.jobs)
         for job in sorted_jobs:
             received = job.time_received
@@ -80,6 +91,10 @@ class Workshop:
                 job.time_started = self.current_time
             print(job)
             self.current_time = job.time_finished
+        return {"time_finished": self.current_time,
+                "avg_waiting_time": sum(job.delay for job in self.jobs) // len(self.jobs),
+                "max_waiting_time": max(self.jobs, key=lambda x: x.delay).delay
+                }
 
     @staticmethod
     def is_working_hours(time: int) -> bool:
@@ -115,4 +130,6 @@ class Workshop:
 
 if __name__ == '__main__':
     workshop = Workshop(argv[1])
-    workshop.fifo()
+    fifo_result = workshop.fifo()
+    for k, v in fifo_result.items():
+        print(k + ":", minuten_zu_tagen(v))
