@@ -42,10 +42,6 @@ class Job:
                                                       time_finished=minuten_zu_tagen(self.time_finished))
         return return_str
 
-    def __lt__(self, other) -> bool:
-        assert type(other) == Job
-        return self.time_received < other.time_received
-
     # TODO Performance vs privates Attribut und einmalige Berechnung prüfen
     # TODO Abweichung von erwarteter Arbeitszeit einberechnen
     # TODO derzeitige Berechnung testen
@@ -80,7 +76,8 @@ class Workshop:
         max_waiting_time: int
 
     def fifo(self) -> Result:
-        sorted_jobs = sorted(self.jobs)
+        self.reset_environment()
+        sorted_jobs = sorted(self.jobs, key=lambda x: x.time_received)
         for job in sorted_jobs:
             received = job.time_received
             if received >= self.current_time:
@@ -126,6 +123,11 @@ class Workshop:
         """
         assert Workshop.is_working_hours(time)
         return 1020 - time % CALENDARDAY
+
+    def reset_environment(self):
+        self.current_time = 0
+        for job in self.jobs:
+            job.time_started = None
 
 
 if __name__ == '__main__':
