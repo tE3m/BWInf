@@ -12,7 +12,7 @@ def minuten_zu_tagen(minuten: int) -> str:
     tage = minuten // 1440
     stunden = (minuten // 60) % 24
     rest = minuten % 60
-    return "{} Tage, {} Stunden und {} Minuten".format(tage, stunden, str(rest).zfill(2))
+    return "{} Tage, {} Stunden und {} Minuten".format(tage, stunden, rest)
 
 
 class Job:
@@ -64,7 +64,7 @@ class Workshop:
     jobs: list[Job]
     current_time: int
 
-    def __init__(self, path: str):
+    def __init__(self, path: str) -> None:
         with open(path, "r") as file:
             lines = file.readlines()
         self.jobs = [Job(*map(int, args.strip().split(" "))) for args in lines if args != "\n"]
