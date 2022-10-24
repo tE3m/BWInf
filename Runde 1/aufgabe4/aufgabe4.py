@@ -1,4 +1,3 @@
-from functools import cached_property
 from sys import argv
 from typing import TypedDict
 
@@ -36,16 +35,16 @@ class Job:
             time_received=minuten_zu_tagen(self.time_received),
             duration=minuten_zu_tagen(self.duration))
         if self.time_started:
-            return_str += "    Bearbeitungsbeginn: {time_started}\n    Verzögerung: {delay}\n    Bearbeitungsende: " \
+            return_str += "    Bearbeitungsbeginn: {time_started}\n    Wartezeit: {waiting_time}\n    Bearbeitungsende:" \
                           "{time_finished}\n ".format(time_started=minuten_zu_tagen(self.time_started),
-                                                      delay=minuten_zu_tagen(self.delay),
+                                                      waiting_time=minuten_zu_tagen(self.waiting_time),
                                                       time_finished=minuten_zu_tagen(self.time_finished))
         return return_str
 
     # TODO Performance vs privates Attribut und einmalige Berechnung prüfen
     # TODO Abweichung von erwarteter Arbeitszeit einberechnen
     # TODO derzeitige Berechnung testen
-    @cached_property
+    @property
     def time_finished(self) -> int:
         assert type(self.time_started) == int
         full_days = (self.duration // WORKDAY) * CALENDARDAY
@@ -54,8 +53,8 @@ class Job:
             remainder += 960
         return self.time_started + full_days + remainder
 
-    @cached_property
-    def delay(self) -> int:
+    @property
+    def waiting_time(self) -> int:
         assert type(self.time_started) == int
         return self.time_finished - self.time_received
 
@@ -89,8 +88,8 @@ class Workshop:
             print(job)
             self.current_time = job.time_finished
         return {"time_finished": self.current_time,
-                "avg_waiting_time": sum(job.delay for job in self.jobs) // len(self.jobs),
-                "max_waiting_time": max(self.jobs, key=lambda x: x.delay).delay
+                "avg_waiting_time": sum(job.waiting_time for job in self.jobs) // len(self.jobs),
+                "max_waiting_time": max(self.jobs, key=lambda x: x.waiting_time).waiting_time
                 }
 
     @staticmethod
