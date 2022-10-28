@@ -41,9 +41,7 @@ class Job:
                                                       time_finished=minutes_to_days(self.time_finished))
         return return_str
 
-    # TODO Performance vs privates Attribut und einmalige Berechnung prüfen
     # TODO Abweichung von erwarteter Arbeitszeit einberechnen
-    # TODO derzeitige Berechnung testen
     @property
     def time_finished(self) -> int:
         assert type(self.time_started) == int
@@ -85,7 +83,26 @@ class Workshop:
                 job.time_started = received
             else:
                 job.time_started = self.current_time
-            print(job)
+            self.current_time = job.time_finished
+        return {"time_finished": self.current_time,
+                "avg_waiting_time": sum(job.waiting_time for job in self.jobs) // len(self.jobs),
+                "max_waiting_time": max(self.jobs, key=lambda x: x.waiting_time).waiting_time
+                }
+
+    def sjn(self):
+        self.reset_environment()
+        sorted_jobs = sorted(self.jobs, key=lambda x: x.time_received)
+        while sorted_jobs:
+            if self.current_time <= sorted_jobs[0].time_received < sorted_jobs[1].time_received:
+                job = sorted_jobs.pop(0)
+                self.current_time = job.time_received
+            else:
+                if self.current_time < sorted_jobs[0].time_received:
+                    self.current_time = sorted_jobs[0].time_received
+                job = min(filter(lambda x: x.time_received <= self.current_time, sorted_jobs),
+                          key=lambda x: x.duration)
+                sorted_jobs.remove(job)
+            job.time_started = self.current_time
             self.current_time = job.time_finished
         return {"time_finished": self.current_time,
                 "avg_waiting_time": sum(job.waiting_time for job in self.jobs) // len(self.jobs),
@@ -123,5 +140,10 @@ class Workshop:
 if __name__ == '__main__':
     workshop = Workshop(argv[1])
     fifo_result = workshop.fifo()
+    print("FIFO")
     for k, v in fifo_result.items():
-        print(k + ":", minuten_zu_tagen(v))
+        print(k + ":", minutes_to_days(v))
+    print("\n\n\n\n\n\nSJN")
+    shortest_first_result = workshop.sjn()
+    for k, v in shortest_first_result.items():
+        print(k + ":", minutes_to_days(v))
