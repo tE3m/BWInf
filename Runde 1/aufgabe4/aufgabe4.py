@@ -109,7 +109,6 @@ class Workshop:
 
         :return: die verbleibenden Arbeitsminuten am derzeitigen Tag
         """
-        assert Workshop.is_working_hours(time)
         return 1020 - time % CALENDARDAY
 
     def reset_environment(self):
