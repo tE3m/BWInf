@@ -102,17 +102,6 @@ class Workshop:
         """
         return 540 <= (time % CALENDARDAY) < 1020
 
-    def next_working_hours(self, time: int | None = None) -> int:
-        """
-        Gibt den nächsten Zeitpunkt zurück, zu dem die Werkstatt geöffnet hat.
-
-        :param time: (optional) der zu prüfende Zeitpunkt. Wird kein Wert übergeben, wird die aktuelle Zeit geprüft
-        :return: der nächste Zeitpunkt, zu dem die Werkstatt geöffnet hat
-        """
-        time = self.current_time if time is None else time
-        assert time >= self.current_time
-        return time if Workshop.is_working_hours(time) else (((time // CALENDARDAY) + 1) * CALENDARDAY) + 540
-
     @staticmethod
     def remaining_working_minutes(time: int) -> int:
         """
