@@ -111,7 +111,10 @@ class Workshop:
         """
         return 1020 - time % CALENDARDAY
 
-    def reset_environment(self):
+    def reset_environment(self) -> None:
+        """
+        Setzt die Simulationsumgebung auf den Ausgangszustand zurück
+        """
         self.current_time = 0
         for job in self.jobs:
             job.time_started = None
