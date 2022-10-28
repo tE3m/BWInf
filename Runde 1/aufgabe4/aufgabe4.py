@@ -7,7 +7,7 @@ WORKDAY = 480
 CALENDARDAY = 1440
 
 
-def minuten_zu_tagen(minuten: int) -> str:
+def minutes_to_days(minuten: int) -> str:
     tage = minuten // 1440
     stunden = (minuten // 60) % 24
     rest = minuten % 60
@@ -32,13 +32,13 @@ class Job:
 
     def __str__(self) -> str:
         return_str = "Auftrag:\n    Eingangszeit: {time_received}\n    Dauer: {duration}\n".format(
-            time_received=minuten_zu_tagen(self.time_received),
-            duration=minuten_zu_tagen(self.duration))
+            time_received=minutes_to_days(self.time_received),
+            duration=minutes_to_days(self.duration))
         if self.time_started:
             return_str += "    Bearbeitungsbeginn: {time_started}\n    Wartezeit: {waiting_time}\n    Bearbeitungsende:" \
-                          "{time_finished}\n ".format(time_started=minuten_zu_tagen(self.time_started),
-                                                      waiting_time=minuten_zu_tagen(self.waiting_time),
-                                                      time_finished=minuten_zu_tagen(self.time_finished))
+                          "{time_finished}\n ".format(time_started=minutes_to_days(self.time_started),
+                                                      waiting_time=minutes_to_days(self.waiting_time),
+                                                      time_finished=minutes_to_days(self.time_finished))
         return return_str
 
     # TODO Performance vs privates Attribut und einmalige Berechnung prüfen
