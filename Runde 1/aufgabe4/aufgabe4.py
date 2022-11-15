@@ -89,7 +89,7 @@ class Workshop:
                 "max_waiting_time": max(self.jobs, key=lambda x: x.waiting_time).waiting_time
                 }
 
-    def sjn(self):
+    def sjn(self) -> Result:
         self.reset_environment()
         sorted_jobs = sorted(self.jobs, key=lambda x: x.time_received)
         while sorted_jobs:
