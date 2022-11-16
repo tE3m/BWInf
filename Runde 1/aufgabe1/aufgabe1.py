@@ -6,7 +6,7 @@ class Book:
     book_text: str
     _pattern: Pattern
 
-    def __init__(self, book_text: str):
+    def __init__(self, book_text: str) -> None:
         self.book_text = book_text
 
     def find_passage(self) -> list[str]:
