@@ -23,10 +23,9 @@ class Book:
 
 
 if __name__ == '__main__':
-    # TODO Pfad festlegen lassen
-    with open("Alice_im_Wunderland.txt", "r") as text:
+    with open(argv[1], "r") as text:
         book = Book(" ".join(text.readlines()))
-    with open(argv[1], "r") as task:
+    with open(argv[2], "r") as task:
         book.pattern = task.readline().strip()
     print("Die passenden Stellen sind:\n")
     for index, match in enumerate(book.find_passage()):
