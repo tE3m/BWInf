@@ -8,6 +8,12 @@ CALENDARDAY = 1440
 
 
 def minutes_to_days(minuten: int) -> str:
+    """
+    Rechnet Minuten zu Tagen, Stunden und Minuten um
+
+    :param minuten: die Anzahl umzurechnender Minuten
+    :return: der formatierte String
+    """
     tage = minuten // 1440
     stunden = (minuten // 60) % 24
     rest = minuten % 60
@@ -15,7 +21,9 @@ def minutes_to_days(minuten: int) -> str:
 
 
 class Job:
-    # Attribute
+    """
+    Ein Auftrag
+    """
     time_received: int
     duration: int
     time_started: int | None
@@ -41,9 +49,13 @@ class Job:
                                                       time_finished=minutes_to_days(self.time_finished))
         return return_str
 
-    # TODO Abweichung von erwarteter Arbeitszeit einberechnen
     @property
     def time_finished(self) -> int:
+        """
+        Berechnet die erwartete Endzeit des Auftrags
+
+        :return: der Endzeitpunkt in Minuten
+        """
         assert type(self.time_started) == int
         full_days = (self.duration // WORKDAY) * CALENDARDAY
         remainder = self.duration % WORKDAY
@@ -53,11 +65,19 @@ class Job:
 
     @property
     def waiting_time(self) -> int:
+        """
+        Berechnet die Wartezeit des Auftrags
+
+        :return: die Wartezeit in Minuten
+        """
         assert type(self.time_started) == int
         return self.time_finished - self.time_received
 
 
 class Workshop:
+    """
+    Eine Werkstatt
+    """
     jobs: list[Job]
     current_time: int
 
@@ -73,15 +93,22 @@ class Workshop:
         max_waiting_time: int
 
     def fifo(self) -> Result:
+        """
+        Simuliert die Arbeit nach dem First-In-First-Out-Prinzip
+
+        :return: ein `dict` mit der Endzeit, der durchschnittlichen und der maximalen Wartezeit
+        """
+        # zurücksetzen der Simulationsumgebung
         self.reset_environment()
+        # sortieren der Aufträge nach chronologischer Reihenfolge
         sorted_jobs = sorted(self.jobs, key=lambda x: x.time_received)
         for job in sorted_jobs:
             received = job.time_received
             if received >= self.current_time:
-                # Liegt der Eingang in der Zukunft, beginnt die Arbeit zum nächsten Zeitpunkt innerhalb der
-                # Öffnungszeiten
+                # Liegt der Eingang in der Zukunft, beginnt die Arbeit bei Eingang des Auftrags
                 job.time_started = received
             else:
+                # Sonst wird sofort begeonnen
                 job.time_started = self.current_time
             self.current_time = job.time_finished
         return {"time_finished": self.current_time,
@@ -90,12 +117,21 @@ class Workshop:
                 }
 
     def sjn(self) -> Result:
+        """
+        Simuliert die Arbeit nach dem Shortest-Job-Next-Prinzip
+
+        :return: ein `dict` mit der Endzeit, der durchschnittlichen und der maximalen Wartezeit
+        """
+        # zurücksetzen der Simulationsumgebung
         self.reset_environment()
+        # sortieren der Aufträge nach chronologischer Reihenfolge
         sorted_jobs = sorted(self.jobs, key=lambda x: x.time_received)
         while sorted_jobs:
+            # liegt aktuell nur ein Auftrag vor, wird dieser bearbeitet
             if self.current_time <= sorted_jobs[0].time_received < sorted_jobs[1].time_received:
                 job = sorted_jobs.pop(0)
                 self.current_time = job.time_received
+            # sonst wird der kürzeste vorliegende Auftrag ausgewählt
             else:
                 if self.current_time < sorted_jobs[0].time_received:
                     self.current_time = sorted_jobs[0].time_received
@@ -143,7 +179,7 @@ if __name__ == '__main__':
     print("FIFO")
     for k, v in fifo_result.items():
         print(k + ":", minutes_to_days(v))
-    print("\n\n\n\n\n\nSJN")
+    print("\nSJN")
     shortest_first_result = workshop.sjn()
     for k, v in shortest_first_result.items():
         print(k + ":", minutes_to_days(v))

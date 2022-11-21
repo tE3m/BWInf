@@ -3,6 +3,9 @@ from sys import argv
 
 
 class Book:
+    """
+    Ein Buch-Objekt
+    """
     book_text: str
     _pattern: Pattern
 
@@ -10,6 +13,11 @@ class Book:
         self.book_text = book_text
 
     def find_passage(self) -> list[str]:
+        """
+        Findet die gesuchte(n) Passage(n)
+
+        :return: eine Liste passender Passagen
+        """
         matches = findall(self.pattern, self.book_text)
         return matches
 
@@ -19,6 +27,7 @@ class Book:
 
     @pattern.setter
     def pattern(self, new_pattern: str):
+        # formt die Nachricht zu einem regulären Ausdruck um
         self._pattern = compile(new_pattern.replace("_", r"\w+"), IGNORECASE | MULTILINE)
 
 
