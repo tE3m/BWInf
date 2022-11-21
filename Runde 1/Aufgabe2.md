@@ -12,9 +12,9 @@ Als Programmiersprache habe ich Python und als Dateiformat für die Bilder Porta
 
 ## Beispiele
 
-Das Namensschema der Bilddateien ist wie folgt: `Kristall_<Breite>-<Höhe>-<Keimanzahl>-<Minimalgeschwindigkeit>_<Nummerierung>`
+Das Namensschema der Bilddateien, die ich beigefügt habe lautet wie folgt: `Kristall_<Breite>-<Höhe>-<Keimanzahl>-<Minimalgeschwindigkeit>_<Nummerierung>`
 
-Um die Funktionsweise habe ich die folgenden Beispiele gewählt:
+Um die Funktionsweise meines Programms zu demonstrieren habe ich die folgenden Beispiele gewählt:
 
 Zuerst einmal ein Kristall mit relativ wenigen Keimen, aber relativ gleichmäßigem Wachstum (entweder 1 oder 2):
 
@@ -64,9 +64,6 @@ from typing import TypedDict
 
 
 class Pixel:
-    """
-    Ein Pixel
-    """
     color: int
     x: int
     y: int
@@ -76,9 +73,6 @@ class Pixel:
 
 
 class Sprout(Pixel):
-    """
-    Ein Kristallisationskeim
-    """
     draw_at: int
     up: int
     down: int
@@ -109,11 +103,6 @@ class Picture:
     active_edges: filter
 
     def simulate(self, update=False) -> None:
-        """
-        Simuliert das Wachstum der Keime
-
-        :param update: bei `True` wird das Bild nach jedem Simulationsschritt in die Datei geschrieben.
-        """
         future_sprouts = self.sprouts.copy()
         step = 0
         while not all(chain.from_iterable(self.pixels)):
@@ -167,9 +156,6 @@ class Picture:
         self.draw()
 
     def draw(self) -> None:
-        """
-        Schreibt das Bild in die Datei
-        """
         with open(self.filename, "w") as file:
             file.write("P2 {} {} 65535\n".format(self.width, self.height))
             for row in self.pixels:
