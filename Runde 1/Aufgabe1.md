@@ -12,6 +12,63 @@ Aus Gründen der Einheitlichkeit mit den anderen Aufgaben habe ich für diese Au
 
 ## Beispiele
 
+```bash
+$ python aufgabe1.py Alice_im_Wunderland.txt stoerung0.txt 
+Die passenden Stellen sind:
+
+1. Das kommt mir gar nicht richtig vor
+```
+
+
+
+```bash
+$ python aufgabe1.py Alice_im_Wunderland.txt stoerung1.txt 
+Die passenden Stellen sind:
+
+1. Ich muß in Clara verwandelt
+2. Ich muß doch Clara sein
+```
+
+
+
+```bash
+$ python aufgabe1.py Alice_im_Wunderland.txt stoerung2.txt
+Die passenden Stellen sind:
+
+1. Fressen Katzen gern Spatzen
+2. Fressen Spatzen gern Katzen
+```
+
+
+
+```bash
+$ python aufgabe1.py Alice_im_Wunderland.txt stoerung3.txt
+Die passenden Stellen sind:
+
+1. das Spiel fing an
+2. Das Publikum fing an
+```
+
+
+
+```bash
+$ python aufgabe1.py Alice_im_Wunderland.txt stoerung4.txt 
+Die passenden Stellen sind:
+
+1. ein sehr schöner Tag
+```
+
+
+
+```bash
+$ python aufgabe1.py Alice_im_Wunderland.txt stoerung5.txt 
+Die passenden Stellen sind:
+
+1. Wollen Sie so gut sein
+```
+
+
+
 ## Quelltext
 
 ```python
